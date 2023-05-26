@@ -32,10 +32,22 @@
                     <select class="form-select" id="type_id" name="type_id">
                         <option value="">Select type</option>
                         @foreach ($types as $type)
-                            <option value="{{ $type->id }}" {{old('type_id') == $type->id ? 'selected' : ''}}>{{ $type->name }}</option>
-                            @endforeach
+                            <option value="{{ $type->id }}" {{ old('type_id') == $type->id ? 'selected' : '' }}>
+                                {{ $type->name }}</option>
+                        @endforeach
                     </select>
                 </div>
+                <div class="mb-3">
+                    <div class="my-3">Technologies:</div>
+                    @foreach ($technologies as $technology)
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="technologies" value="{{ $technology->id }}"
+                                name="technologies[]" {{in_array($technology->id, old('technologies', [])) ? 'checked': ''}}> <!--name: come array perchè gli voglio passare più elementi // in old metto un array vuolto perchè inizialmente non passo alcun elemento-->
+                            <label class="form-check-label" for="technologies">{{ $technology->name }}</label>
+                        </div>
+                    @endforeach
+                </div>
+                <!-- bottone di conferma creazione -->
                 <button type="submit" class="btn btn-primary my-3">Confirm</button>
             </form>
         </div>
