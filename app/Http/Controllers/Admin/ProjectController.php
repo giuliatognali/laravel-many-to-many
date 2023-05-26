@@ -118,6 +118,7 @@ class ProjectController extends Controller
                 $project->image = Storage::put('uploads', $data['image']);
             }
         }
+        
 
         $technologies = isset($data['technologies']) ? $data['technologies'] : [];  //se technologies esiste mi salvi data['technologies'] altrimenti un arrat vuoto
             $project->technologies()->sync($technologies);

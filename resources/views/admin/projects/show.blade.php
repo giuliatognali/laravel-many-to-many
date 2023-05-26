@@ -5,11 +5,17 @@
         <div class="row justify-content-center">
             <h2 class="text-secondary">{{ $project->name }}</h2>
             <div>
-                @if ($project->type_id)
                     <h5>
                         Type: {{ $project->type?->name ?: 'No type defined' }} 
                     </h5> 
-                @endif
+
+                <div> 
+                    Technologies: 
+                    {{ $project->technologies->implode('name', ', ') ?: 'No technologies'}}
+                </div>
+
+
+
                 @if ($project->image)
                     <div>
                         <img src="{{ asset('storage/' . $project->image) }}" alt="{{ $project->name }}" class="w-50 my-3">
