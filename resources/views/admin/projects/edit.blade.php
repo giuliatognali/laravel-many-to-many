@@ -21,15 +21,17 @@
                     <textarea class="form-control" id="content" name="content">{{ old('content', $project->content) }}</textarea>
                 </div>
                 <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" id="set_image" name="set_image" value="1"
-                        @if ($project->image) checked @endif>
+                    <input class="form-check-input" type="checkbox" role="switch" id="set_image" name="set_image"
+                        value="1" @if ($project->image) checked @endif>
                     <label class="form-check-label" for="set_image">Image</label>
                 </div>
                 <!--container input img -->
-                <div class="mb-3 @if(!$project->image) d-none @endif" id="img-input-container">  <!--se l'immagine non esiste d-none -->
+                <div class="mb-3 @if (!$project->image) d-none @endif" id="img-input-container">
+                    <!--se l'immagine non esiste d-none -->
                     <!--preview img upload -->
                     <div class="preview">
-                        <img id="file-img-preview" class="w-50 my-3" @if ($project->image) src={{ asset('storage/' . $project->image) }} @endif>
+                        <img id="file-img-preview" class="w-50 my-3"
+                            @if ($project->image) src={{ asset('storage/' . $project->image) }} @endif>
                     </div>
                     <!--/preview img upload -->
 
@@ -42,9 +44,38 @@
                     <select class="form-select" id="type_id" name="type_id">
                         <option value="">Select type</option>
                         @foreach ($types as $type)
-                            <option value="{{ $type->id }}" {{ old('type_id', $project->type_id) == $type->id ? 'selected' : '' }}>{{ $type->name }}</option>
-                            @endforeach
+                            <option value="{{ $type->id }}"
+                                {{ old('type_id', $project->type_id) == $type->id ? 'selected' : '' }}>{{ $type->name }}
+                            </option>
+                        @endforeach
                     </select>
+                </div>
+                <div class="mb-3">
+                    <div class="my-3">Technologies:</div>
+
+                    @if($errors->any())  <!--se c'è un'errore nella compilazione non va avanti con la verification e mi restituisce un array-->
+                    @foreach ($technologies as $technology)
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="technologies" value="{{ $technology->id }}"
+                                name="technologies[]"
+                                {{ in_array($technology->id, old('technologies', [])) ? 'checked' : '' }}> <!--mi restituisce un array -->
+                            <label class="form-check-label" for="technologies">{{ $technology->name }}</label>
+                        </div>
+                    @endforeach
+@else
+
+                    @foreach ($technologies as $technology)
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="technologies" value="{{ $technology->id }}"
+                                name="technologies[]"
+                                {{ $project->technologies->contains($technology->id) ? 'checked' : '' }}> <!--non è un array ma una collection -->
+                            <label class="form-check-label" for="technologies">{{ $technology->name }}</label>
+                        </div>
+                    @endforeach
+
+@endif
+
+
                 </div>
                 <button type="submit" class="btn btn-warning my-3">Confirm edit</button>
             </form>

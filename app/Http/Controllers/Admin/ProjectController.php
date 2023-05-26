@@ -51,19 +51,18 @@ class ProjectController extends Controller
         $project->fill($data);
 
         $project->slug = Str::slug($data['name'], '-');
-       
-        if(isset($data['image'])){
-            $project->image= Storage::put('uploads', $data['image']);
+
+        if (isset($data['image'])) {
+            $project->image = Storage::put('uploads', $data['image']);
         }
 
         $project->save();
 
-        if(isset($data['technologies'])){  //se le techn sono settate 
+        if (isset($data['technologies'])) {  //se le techn sono settate 
             $project->technologies()->sync($data['technologies']);  //da inserire dopo save perchè altrimenti non ho ancora project_id
         }
         return redirect()->route('admin.projects.index')
-        ->with('message', 'Project add successfully');
-
+            ->with('message', 'Project add successfully');
     }
 
     /**
@@ -89,7 +88,8 @@ class ProjectController extends Controller
     public function edit(Project $project)
     {
         $types = Type::all();
-        return view('admin.projects.edit', compact('project', 'types'));
+        $technologies = Technology::all();
+        return view('admin.projects.edit', compact('project', 'types', 'technologies'));
     }
 
     /**
@@ -105,27 +105,29 @@ class ProjectController extends Controller
         $data = $request->validated();
         $project->slug = Str::slug($data['name']);
 
-        if(empty($data['set_image'])){   //se l'img non è settata, quindi empty
-            if($project->image){            //se l'immagine c'era la cancello e svuoto il valore (null)
-            Storage::delete($project->image);
-            $project->image = null;  
+        if (empty($data['set_image'])) {   //se l'img non è settata, quindi empty
+            if ($project->image) {            //se l'immagine c'era la cancello e svuoto il valore (null)
+                Storage::delete($project->image);
+                $project->image = null;
             }
-            
-        } else{
-            if(isset($data['image'])){
-                if($project->image){        //se setto un immagine e se esiteva un'immagine prima allora la cancello
+        } else {
+            if (isset($data['image'])) {
+                if ($project->image) {        //se setto un immagine e se esiteva un'immagine prima allora la cancello
                     Storage::delete($project->image);
-                } 
-                $project->image= Storage::put('uploads', $data['image']);
+                }
+                $project->image = Storage::put('uploads', $data['image']);
             }
         }
 
+        $technologies = isset($data['technologies']) ? $data['technologies'] : [];  //se technologies esiste mi salvi data['technologies'] altrimenti un arrat vuoto
+            $project->technologies()->sync($technologies);
+
         $project->update($data);
 
-        //$project->save();
+        //$project->save(); update salva in automatico
 
         return redirect()->route('admin.projects.index')
-        ->with('message',  "Project $project->name updated successfully");
+            ->with('message',  "Project $project->name updated successfully");
     }
 
     /**
@@ -137,14 +139,13 @@ class ProjectController extends Controller
     public function destroy(Project $project)
     {
         //$old_id =$project->id; //salva l'id prima di cancellarlo per poterlo inserire nel messaggio
-        
-        if($project->image){
+
+        if ($project->image) {
             Storage::delete($project->image);
         }
-        
+
         $project->delete();
         return redirect()->route('admin.projects.index')
-        ->with('message',  "Project $project->name deleted successfully");
-
+            ->with('message',  "Project $project->name deleted successfully");
     }
 }

@@ -17,7 +17,7 @@ return new class extends Migration
 
             $table->id(); //il campo id non è necessario
 
-            $table->foreignId('project_id')->constrained()->cascadeOnDelete(); 
+            $table->foreignId('project_id')->constrained()->cascadeOnDelete(); //cascadeOnDelete  si applica solo alla tabella ponte non alle tabelle in relazione
             $table->foreignId('technology_id')->constrained()->cascadeOnDelete(); 
 
             $table->timestamps();
