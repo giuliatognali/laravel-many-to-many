@@ -34,6 +34,7 @@ class UpdateProjectRequest extends FormRequest
             ],
             'content' => 'nullable|string',
             'image'=> 'nullable|image|max:2048',
+            'type_id' => 'nullable|exists:types,id',
             'set_image'=> 'boolean',
             'technologies'=>'nullable|exists:technologies,id'
         ];
